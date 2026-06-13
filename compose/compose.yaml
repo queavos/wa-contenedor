@@ -1,0 +1,28 @@
+services:
+  whatsapp:
+    build: .
+    container_name: whatsapp-service
+    user: node
+    working_dir: /app
+    command: bash -c "npm start"
+    restart: unless-stopped
+    # --- SECCIÓN DE LÍMITES AGREGADA ---
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0' # Máximo 1 núcleo de CPU
+          memory: 2G # Límite máximo de RAM
+        reservations:
+          memory: 512M # RAM mínima garantizada
+    # ----------------------------------
+    ports:
+      - 3000:3000
+    volumes:
+      - ../datos/app:/app
+      - ../datos/app/logs:/app/logs
+      - ../datos/app/session:/app/session
+    networks:
+      - infra_net
+networks:
+  infra_net:
+    external: true
